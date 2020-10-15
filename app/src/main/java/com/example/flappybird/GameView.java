@@ -56,6 +56,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     public boolean onTouchEvent(MotionEvent event) {
         int action = event.getAction();
         if(action == MotionEvent.ACTION_DOWN){
+            if(AppConstants.getGameEngine().gameState == 0){
+                AppConstants.getGameEngine().gameState = 1;
+                AppConstants.getSoundBank().playSwoosh();
+            }else{
+                AppConstants.getSoundBank().playWing();
+            }
             AppConstants.getGameEngine().gameState = 1;
             AppConstants.getGameEngine().bird.setVelocity(AppConstants.VELOCITY_WHEN_JUMPED);
         }

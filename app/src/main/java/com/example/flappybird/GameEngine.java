@@ -1,6 +1,8 @@
 package com.example.flappybird;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +13,9 @@ public class GameEngine {
     static int gameState; // 0(not started), 1(playing), 2(game over)
     ArrayList<Tube> tubes;
     Random random;
+    int score;
+    int scoringTube; // Keeps track of scoring tube
+    Paint scorePaint;
 
     public GameEngine() {
         backgroundImage = new BackgroundImage();
@@ -26,10 +31,30 @@ public class GameEngine {
             Tube tube = new Tube(tubeX, topTubeOffsetY);
             tubes.add(tube);
         }
+        score = 0;
+        scoringTube = 0;
+        scorePaint = new Paint();
+        scorePaint.setColor(Color.RED);
+        scorePaint.setTextSize(100);
+        scorePaint.setTextAlign(Paint.Align.LEFT);
     }
 
     public void updateAndDrawTubes(Canvas canvas) {
         if (gameState == 1) {
+            if ((tubes.get(scoringTube).getTubeX() < bird.getX() + AppConstants.getBitmapBank().getBirdWidth())
+                    && (tubes.get(scoringTube).getTopTubeOffsetY() > bird.getY()
+                    || (tubes.get(scoringTube).getBottomTubeY() < bird.getY() + AppConstants.getBitmapBank().getBirdHeight()))) {
+                gameState = 2;
+                AppConstants.getSoundBank().playHit();
+            } else if (tubes.get(scoringTube).getTubeX() < bird.getX() - AppConstants.getBitmapBank().getTubeWidth()) {
+                score++;
+                scoringTube++;
+                if (scoringTube > AppConstants.numberOfTubes - 1) {
+                    scoringTube = 0;
+                }
+                AppConstants.getSoundBank().playPoint();
+            }
+
             for (int i = 0; i < AppConstants.numberOfTubes; i++) {
                 if (tubes.get(i).getTubeX() < -AppConstants.getBitmapBank().getTubeWidth()) {
                     tubes.get(i).setTubeX(tubes.get(i).getTubeX() + AppConstants.numberOfTubes * AppConstants.distanceBetweenTubes);
@@ -47,6 +72,7 @@ public class GameEngine {
                     canvas.drawBitmap(AppConstants.getBitmapBank().getRedTubeBottom(), tubes.get(i).getTubeX(), tubes.get(i).getBottomTubeY(), null);
                 }
             }
+            canvas.drawText("Point: " + score, 10, 110, scorePaint);
         }
     }
 

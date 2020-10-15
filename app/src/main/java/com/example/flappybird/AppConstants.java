@@ -18,12 +18,18 @@ public class AppConstants {
     static int minTubeOffsetY;
     static int maxTubeOffsetY;
     static int distanceBetweenTubes;
+    static SoundBank soundBank;
 
     public static void initialization(Context context){
         setScreenSize(context);
         bitmapBank = new BitmapBank(context.getResources());
         setGameConstants();
         gameEngine = new GameEngine();
+        soundBank = new SoundBank(context);
+    }
+
+    public static SoundBank getSoundBank(){
+        return soundBank;
     }
 
     public static void setGameConstants(){
