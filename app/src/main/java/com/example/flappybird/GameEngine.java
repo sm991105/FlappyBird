@@ -1,5 +1,8 @@
 package com.example.flappybird;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -46,6 +49,12 @@ public class GameEngine {
                     || (tubes.get(scoringTube).getBottomTubeY() < bird.getY() + AppConstants.getBitmapBank().getBirdHeight()))) {
                 gameState = 2;
                 AppConstants.getSoundBank().playHit();
+                Context context = AppConstants.gameActivityContext;
+                Intent intent = new Intent(context, GameOver.class);
+                intent.putExtra("score", score);
+                context.startActivity(intent);
+                ((Activity)context).finish();
+
             } else if (tubes.get(scoringTube).getTubeX() < bird.getX() - AppConstants.getBitmapBank().getTubeWidth()) {
                 score++;
                 scoringTube++;
